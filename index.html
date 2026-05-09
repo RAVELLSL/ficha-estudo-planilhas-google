@@ -1,0 +1,2019 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ficha de Estudo — Google Planilhas com Apoio de IA</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Merriweather:wght@700;900&family=Source+Sans+3:wght@400;600;700;800;900&display=swap");
+
+    :root {
+      --bg: #eef3f1;
+      --surface: #fffdf8;
+      --surface-soft: #f7fbf8;
+      --ink: #1f2933;
+      --muted: #5f6c7b;
+      --line: #d8e2dc;
+      --accent: #0f9d58;
+      --accent-dark: #0b7d45;
+      --accent-2: #1a73e8;
+      --yellow: #fbbc04;
+      --red: #ea4335;
+      --blue-soft: #eaf2fe;
+      --green-soft: #e8f5ee;
+      --amber-soft: #fff8e1;
+      --red-soft: #fff0ee;
+      --shadow: 0 14px 34px rgba(12, 35, 28, 0.13);
+      --radius: 16px;
+      --topbar-h: 70px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      --serif: "Merriweather", Georgia, "Times New Roman", serif;
+      --sans: "Source Sans 3", "Segoe UI", Roboto, Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      height: 100%;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: var(--sans);
+      line-height: 1.62;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(15, 157, 88, 0.14), transparent 28%),
+        radial-gradient(circle at 100% 0%, rgba(26, 115, 232, 0.12), transparent 24%),
+        linear-gradient(135deg, #e9f4ef 0%, #f6f7fb 45%, #edf7f2 100%);
+      overflow: hidden;
+    }
+
+    a {
+      color: var(--accent-dark);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .topbar {
+      height: var(--topbar-h);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      background: rgba(255, 253, 248, 0.94);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .topbar-inner {
+      max-width: 1360px;
+      height: 100%;
+      margin: 0 auto;
+      padding: 0 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .brand {
+      font-family: var(--serif);
+      font-weight: 900;
+      color: var(--accent-dark);
+      letter-spacing: 0.01em;
+      font-size: 1.04rem;
+      white-space: nowrap;
+    }
+
+    .nav {
+      display: none;
+      gap: 8px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .nav::-webkit-scrollbar {
+      display: none;
+    }
+
+    .nav a {
+      color: #20342b;
+      background: var(--surface-soft);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 7px 11px;
+      font-size: 0.84rem;
+      font-weight: 700;
+      white-space: nowrap;
+      text-decoration: none;
+    }
+
+    .nav a:hover {
+      border-color: rgba(15, 157, 88, 0.32);
+      color: var(--accent-dark);
+      background: #fff;
+    }
+
+    .book-app {
+      max-width: 1360px;
+      margin: 0 auto;
+      padding: 14px 18px 18px;
+      height: calc(100dvh - var(--topbar-h));
+      display: grid;
+      grid-template-columns: 300px minmax(0, 1fr);
+      gap: 16px;
+    }
+
+    .sidebar {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 14px;
+      overflow: auto;
+    }
+
+    .sidebar h2 {
+      font-family: var(--serif);
+      font-size: 1.02rem;
+      margin: 0 0 8px;
+      color: #173b2d;
+    }
+
+    .sidebar p {
+      margin: 0 0 12px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .sidebar-nav {
+      display: grid;
+      gap: 8px;
+    }
+
+    .sidebar-nav a {
+      text-decoration: none;
+      color: #27352e;
+      border: 1px solid var(--line);
+      background: var(--surface-soft);
+      border-radius: 12px;
+      padding: 9px 11px;
+      font-size: 0.92rem;
+      font-weight: 700;
+      transition: 0.2s ease;
+    }
+
+    .sidebar-nav a:hover,
+    .sidebar-nav a.active {
+      border-color: rgba(15, 157, 88, 0.35);
+      color: var(--accent-dark);
+      transform: translateX(2px);
+      background: #fff;
+      text-decoration: none;
+    }
+
+    .viewer {
+      min-width: 0;
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      gap: 12px;
+    }
+
+    .viewer-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      background: linear-gradient(110deg, #0a4d30, #0f9d58);
+      color: #effaf4;
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      border-radius: 999px;
+      padding: 8px 10px;
+      box-shadow: 0 10px 22px rgba(10, 77, 48, 0.24);
+    }
+
+    .viewer-status {
+      font-weight: 700;
+      font-size: 0.92rem;
+      letter-spacing: 0.01em;
+      white-space: nowrap;
+    }
+
+    .viewer-preference {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      color: #effaf4;
+      font-size: 0.82rem;
+      white-space: nowrap;
+    }
+
+    .viewer-preference select {
+      appearance: none;
+      border: 1px solid rgba(255, 255, 255, 0.36);
+      background: rgba(255, 255, 255, 0.12);
+      color: #effaf4;
+      border-radius: 999px;
+      padding: 6px 10px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .viewer-preference select option {
+      color: #163327;
+      background: #fffaf2;
+    }
+
+    .viewer-toolbar button {
+      appearance: none;
+      border: 1px solid rgba(255, 255, 255, 0.36);
+      background: rgba(255, 255, 255, 0.1);
+      color: #effaf4;
+      border-radius: 999px;
+      padding: 8px 12px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .viewer-toolbar button:hover:not(:disabled) {
+      background: rgba(255, 255, 255, 0.16);
+    }
+
+    .viewer-toolbar button:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .viewer-stage {
+      position: relative;
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      background: rgba(255, 252, 246, 0.6);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      min-height: 0;
+    }
+
+    .book {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    .page {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 0;
+      overflow: hidden;
+      transition: opacity 0.28s ease;
+    }
+
+    .page.active {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    .page-content {
+      width: 100%;
+      padding: clamp(18px, 2.2vw, 34px);
+      transform-origin: top left;
+      will-change: transform;
+    }
+
+    .viewer-stage.mode-reading .page.active {
+      overflow: auto;
+    }
+
+    .viewer-stage.mode-reading .page.active::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+
+    .viewer-stage.mode-reading .page.active::-webkit-scrollbar-thumb {
+      background: rgba(15, 157, 88, 0.42);
+      border-radius: 999px;
+      border: 2px solid rgba(255, 251, 242, 0.85);
+    }
+
+    .viewer-stage.mode-reading .page.active::-webkit-scrollbar-track {
+      background: rgba(216, 226, 220, 0.55);
+      border-radius: 999px;
+    }
+
+    .viewer-stage.mode-fit .page.active {
+      overflow: hidden;
+    }
+
+    .page-content.tight-mode {
+      font-size: 0.94em;
+    }
+
+    .page-content.tight-mode h2 {
+      margin-bottom: 8px;
+      padding-bottom: 6px;
+    }
+
+    .page-content.tight-mode h3 {
+      margin-top: 12px;
+    }
+
+    .page-content.tight-mode p,
+    .page-content.tight-mode li {
+      margin-bottom: 6px;
+    }
+
+    .page-content.tight-mode .card,
+    .page-content.tight-mode .callout,
+    .page-content.tight-mode .step,
+    .page-content.tight-mode .prompt,
+    .page-content.tight-mode .ai-panel,
+    .page-content.tight-mode .quote {
+      padding: 9px;
+    }
+
+    .scale-note {
+      position: absolute;
+      right: 12px;
+      bottom: 10px;
+      background: rgba(31, 41, 51, 0.72);
+      color: #fff;
+      border-radius: 999px;
+      padding: 4px 8px;
+      font-size: 0.74rem;
+      z-index: 20;
+      display: none;
+    }
+
+    .viewer-stage.is-scaled .scale-note {
+      display: inline-flex;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4 {
+      font-family: var(--serif);
+      margin: 0 0 10px;
+      line-height: 1.18;
+      color: #173b2d;
+      text-wrap: balance;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 4.8vw, 3.25rem);
+      letter-spacing: -0.035em;
+    }
+
+    h2 {
+      font-size: clamp(1.26rem, 2.4vw, 1.8rem);
+      border-bottom: 2px solid var(--line);
+      padding-bottom: 8px;
+      margin-bottom: 12px;
+    }
+
+    h3 {
+      font-size: clamp(1.05rem, 1.9vw, 1.3rem);
+      margin-top: 16px;
+    }
+
+    h4 {
+      font-size: 1rem;
+    }
+
+    p {
+      margin: 0 0 10px;
+      color: #27342e;
+    }
+
+    ul,
+    ol {
+      margin: 0 0 10px;
+      padding-left: 1.15rem;
+    }
+
+    li {
+      margin-bottom: 5px;
+    }
+
+    .lead {
+      font-size: 1.06rem;
+      color: #41505f;
+      max-width: 760px;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .cover {
+      min-height: 0;
+      background:
+        radial-gradient(circle at 88% 10%, rgba(26, 115, 232, 0.10), transparent 30%),
+        radial-gradient(circle at 14% 0%, rgba(15, 157, 88, 0.13), transparent 32%),
+        linear-gradient(140deg, #fffdf8 0%, #f7fbf8 100%);
+    }
+
+    .cover > .page-content {
+      height: 100%;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: minmax(0, 0.92fr) minmax(320px, 0.78fr);
+      gap: clamp(14px, 1.8vw, 24px);
+      align-items: stretch;
+      padding: clamp(16px, 1.7vw, 26px);
+      overflow: hidden;
+    }
+
+    .viewer-stage.mode-reading .page.cover.active,
+    .viewer-stage.mode-fit .page.cover.active {
+      overflow: hidden;
+    }
+
+    .cover-copy {
+      min-width: 0;
+      min-height: 0;
+      display: grid;
+      grid-template-rows: auto auto 1fr auto;
+      align-content: center;
+      padding: clamp(14px, 1.8vw, 24px);
+      border: 1px solid rgba(15, 157, 88, 0.18);
+      border-radius: 18px;
+      background:
+        linear-gradient(135deg, rgba(232, 245, 238, 0.82), rgba(255, 253, 248, 0.92)),
+        #fff;
+      box-shadow: 0 14px 30px rgba(12, 35, 28, 0.08);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cover-copy::after {
+      content: "";
+      position: absolute;
+      width: 160px;
+      height: 160px;
+      right: -58px;
+      bottom: -70px;
+      border-radius: 50%;
+      border: 26px solid rgba(15, 157, 88, 0.08);
+      pointer-events: none;
+    }
+
+    .eyebrow,
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      width: max-content;
+      max-width: 100%;
+      padding: 5px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(15, 157, 88, 0.26);
+      background: var(--green-soft);
+      color: var(--accent-dark);
+      font-size: 0.8rem;
+      font-weight: 800;
+      margin-bottom: clamp(8px, 1.1vw, 14px);
+      position: relative;
+      z-index: 1;
+    }
+
+    .cover h1 {
+      font-size: clamp(1.95rem, 3.45vw, 3.35rem);
+      line-height: 1.02;
+      margin: 0 0 clamp(10px, 1.3vw, 16px);
+      letter-spacing: -0.04em;
+      max-width: 15ch;
+      position: relative;
+      z-index: 1;
+    }
+
+
+    .cover h1 span {
+      display: block;
+    }
+
+    .cover .subtitle {
+      align-self: start;
+      font-size: clamp(0.94rem, 1.08vw, 1.08rem);
+      line-height: 1.44;
+      color: #41505f;
+      max-width: 58ch;
+      margin: 0;
+      padding: clamp(10px, 1.2vw, 14px);
+      border-left: 4px solid var(--accent);
+      border-radius: 13px;
+      background: rgba(255, 255, 255, 0.72);
+      position: relative;
+      z-index: 1;
+    }
+
+    .cover .meta,
+    .meta {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 7px;
+      margin-top: clamp(10px, 1.3vw, 16px);
+      position: relative;
+      z-index: 1;
+    }
+
+    .pill {
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: var(--surface-soft);
+      color: #20342b;
+      font-weight: 700;
+      font-size: 0.8rem;
+      line-height: 1.15;
+      padding: 6px 9px;
+      text-align: center;
+    }
+
+    .cover .device {
+      align-self: stretch;
+      min-width: 0;
+      min-height: 0;
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      padding: clamp(10px, 1.15vw, 14px);
+      border-radius: 18px;
+      transform: none;
+      overflow: hidden;
+    }
+
+    .cover .browser-bar {
+      height: 30px;
+      margin-bottom: 8px;
+      border-radius: 12px;
+      font-size: 0.72rem;
+      flex-shrink: 0;
+    }
+
+    .cover .mini-sheet {
+      min-height: 0;
+      height: 100%;
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      border-radius: 14px;
+    }
+
+    .cover .sheet-head {
+      padding: 8px 10px;
+      font-size: 0.86rem;
+      min-height: 38px;
+    }
+
+    .cover .sheet-icon {
+      width: 22px;
+      height: 22px;
+      font-size: 0.72rem;
+    }
+
+    .cover .grid {
+      min-width: 0;
+      height: 100%;
+      display: grid;
+      grid-template-columns: 38px repeat(5, minmax(0, 1fr));
+      grid-template-rows: repeat(6, minmax(28px, 1fr));
+      font-size: clamp(0.6rem, 0.76vw, 0.72rem);
+      color: #334155;
+    }
+
+    .cover .grid div {
+      min-width: 0;
+      min-height: 0;
+      padding: 5px 6px;
+      display: flex;
+      align-items: center;
+      border-right: 1px solid #e7ece8;
+      border-bottom: 1px solid #e7ece8;
+      background: #fff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .cover .grid .h,
+    .cover .grid .r {
+      justify-content: center;
+    }
+
+    @media (min-width: 1081px) and (max-height: 760px) {
+      .cover > .page-content {
+        padding: 12px;
+        gap: 12px;
+      }
+
+      .cover-copy {
+        padding: 14px;
+      }
+
+      .cover h1 {
+        font-size: clamp(1.75rem, 3vw, 2.55rem);
+        margin-bottom: 8px;
+      }
+
+      .cover .subtitle {
+        font-size: 0.9rem;
+        line-height: 1.36;
+        padding: 9px 10px;
+      }
+
+      .cover .meta {
+        gap: 5px;
+        margin-top: 8px;
+      }
+
+      .cover .pill {
+        font-size: 0.74rem;
+        padding: 5px 7px;
+      }
+
+      .cover .browser-bar {
+        height: 26px;
+        margin-bottom: 7px;
+      }
+
+      .cover .sheet-head {
+        min-height: 32px;
+        padding: 6px 9px;
+      }
+
+      .cover .grid {
+        grid-template-rows: repeat(6, minmax(24px, 1fr));
+        font-size: 0.62rem;
+      }
+
+      .cover .grid div {
+        padding: 4px 5px;
+      }
+    }
+
+    .device {
+      background: #fff;
+      color: var(--ink);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: 0 16px 36px rgba(12, 35, 28, 0.14);
+      padding: 13px;
+      transform: rotate(0.6deg);
+      position: relative;
+      z-index: 2;
+    }
+
+    .browser-bar {
+      height: 34px;
+      border-radius: 13px;
+      background: #f1f3f4;
+      display: flex;
+      gap: 7px;
+      align-items: center;
+      padding: 0 10px;
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #d0d5dd;
+      flex: 0 0 auto;
+    }
+
+    .dot:nth-child(1) { background: var(--red); }
+    .dot:nth-child(2) { background: var(--yellow); }
+    .dot:nth-child(3) { background: var(--accent); }
+
+    .mini-sheet {
+      border: 1px solid #dfe5e1;
+      border-radius: 15px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .sheet-head {
+      background: #eef7f2;
+      border-bottom: 1px solid #dfe5e1;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-weight: 900;
+      color: var(--accent-dark);
+    }
+
+    .sheet-icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      background: var(--accent);
+      display: inline-grid;
+      place-items: center;
+      color: #fff;
+      font-weight: 900;
+      font-size: 0.8rem;
+      flex: 0 0 auto;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 46px repeat(5, 1fr);
+      font-size: 0.76rem;
+      color: #334155;
+      min-width: 560px;
+    }
+
+    .grid div {
+      border-right: 1px solid #e7ece8;
+      border-bottom: 1px solid #e7ece8;
+      min-height: 34px;
+      padding: 7px;
+      background: #fff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .grid .h,
+    .grid .r {
+      background: #f8faf9;
+      font-weight: 800;
+      color: #637083;
+      text-align: center;
+    }
+
+    .grid .green-cell { background: #e8f5ee; color: var(--accent-dark); font-weight: 800; }
+    .grid .blue-cell { background: #e8f0fe; color: var(--accent-2); font-weight: 800; }
+    .grid .yellow-cell { background: #fff8e1; color: #8a5c00; font-weight: 800; }
+
+    .toc {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      counter-reset: toc;
+    }
+
+    .toc a {
+      counter-increment: toc;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 12px;
+      padding: 10px;
+    }
+
+    .toc a::before {
+      content: counter(toc, decimal-leading-zero);
+      width: 30px;
+      height: 30px;
+      border-radius: 9px;
+      background: var(--accent);
+      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.74rem;
+      font-weight: 800;
+      flex: 0 0 auto;
+    }
+
+    .toc strong {
+      display: block;
+      color: #173b2d;
+    }
+
+    .toc span {
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    .chapter-title {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin-bottom: 14px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 13px;
+    }
+
+    .chapter-title h2 {
+      border-bottom: none;
+      padding-bottom: 0;
+      margin-bottom: 6px;
+    }
+
+    .num {
+      min-width: 42px;
+      height: 42px;
+      border-radius: 13px;
+      background: var(--accent);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+      font-size: 1.05rem;
+      box-shadow: 0 8px 18px rgba(15, 157, 88, 0.22);
+      font-family: var(--sans);
+      flex: 0 0 auto;
+    }
+
+    .two,
+    .three,
+    .four {
+      display: grid;
+      gap: 10px;
+    }
+
+    .two {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .three {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .four {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .card,
+    .prompt,
+    .ai-panel,
+    .quote {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+    }
+
+    .card h4 {
+      margin-top: 0;
+    }
+
+    .card strong {
+      color: var(--accent-dark);
+    }
+
+    .callout {
+      border-radius: 12px;
+      padding: 11px 13px;
+      margin: 12px 0;
+      border: 1px solid #cce5d7;
+      background: var(--green-soft);
+    }
+
+    .callout.warning,
+    .warning.callout {
+      background: var(--amber-soft);
+      border-color: #efd4ab;
+    }
+
+    .callout.danger,
+    .danger.callout {
+      background: var(--red-soft);
+      border-color: #edc8bf;
+    }
+
+    .callout.info,
+    .info.callout {
+      background: var(--blue-soft);
+      border-color: #cbdaf8;
+    }
+
+    .step {
+      display: grid;
+      grid-template-columns: 38px 1fr;
+      gap: 12px;
+      align-items: flex-start;
+      margin: 9px 0;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      padding: 10px;
+    }
+
+    .step .bubble {
+      width: 28px;
+      height: 28px;
+      border-radius: 9px;
+      background: var(--green-soft);
+      color: var(--accent-dark);
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+      font-size: 0.85rem;
+    }
+
+    .fake-ui {
+      border: 1px solid #dce3e0;
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 10px 26px rgba(20, 40, 35, 0.1);
+      overflow: auto;
+      margin: 14px 0;
+    }
+
+    .app-top {
+      min-height: 54px;
+      background: #f7faf8;
+      border-bottom: 1px solid #dce3e0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 16px;
+    }
+
+    .app-title {
+      font-weight: 900;
+      color: #173b2d;
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 7px;
+      flex-wrap: wrap;
+      background: #fff;
+      border-bottom: 1px solid #e7ece8;
+      padding: 9px 14px;
+    }
+
+    .tool {
+      min-height: 27px;
+      padding: 4px 9px;
+      border-radius: 8px;
+      background: #f1f4f3;
+      border: 1px solid #e1e7e3;
+      font-size: 0.82rem;
+      color: #475569;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .formula {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #fbfcfc;
+      border-bottom: 1px solid #e7ece8;
+      padding: 9px 14px;
+      min-width: 640px;
+    }
+
+    .fx {
+      font-family: var(--serif);
+      font-weight: 700;
+      color: #637083;
+    }
+
+    .formula-box {
+      flex: 1;
+      border: 1px solid #dfe5e1;
+      border-radius: 10px;
+      min-height: 32px;
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      font-family: var(--mono);
+      font-size: 0.86rem;
+      color: #173b2d;
+      background: #fff;
+    }
+
+    .ui-grid {
+      display: grid;
+      grid-template-columns: 52px repeat(6, minmax(88px, 1fr));
+      font-size: 0.82rem;
+      min-width: 720px;
+    }
+
+    .ui-grid div {
+      border-right: 1px solid #e7ece8;
+      border-bottom: 1px solid #e7ece8;
+      min-height: 38px;
+      padding: 8px 9px;
+    }
+
+    .ui-grid .col,
+    .ui-grid .row {
+      background: #f8faf9;
+      font-weight: 800;
+      color: #657387;
+      text-align: center;
+    }
+
+    .selected {
+      outline: 3px solid var(--accent);
+      outline-offset: -3px;
+      background: #eefaf3 !important;
+    }
+
+    .sum {
+      background: #e8f5ee !important;
+      color: var(--accent-dark);
+      font-weight: 800;
+    }
+
+    .negative {
+      background: #fff0ee !important;
+      color: #b3261e;
+      font-weight: 800;
+    }
+
+    .note-line {
+      background: #eaf2fe !important;
+      color: var(--accent-2);
+      font-weight: 800;
+    }
+
+    .phone-preview {
+      max-width: 300px;
+      margin: 10px auto;
+      border: 10px solid #1f2933;
+      border-radius: 34px;
+      background: #fff;
+      overflow: hidden;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.18);
+    }
+
+    .phone-head {
+      background: var(--accent);
+      color: #fff;
+      padding: 16px;
+      font-weight: 900;
+    }
+
+    .phone-body {
+      padding: 14px;
+    }
+
+    .mini-button {
+      background: var(--green-soft);
+      color: var(--accent-dark);
+      border-radius: 12px;
+      padding: 10px;
+      margin: 8px 0;
+      font-weight: 800;
+    }
+
+    .table-wrap,
+    table {
+      width: 100%;
+    }
+
+    table {
+      border-collapse: collapse;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      overflow: hidden;
+      background: #fff;
+      margin: 12px 0;
+      font-size: 0.92rem;
+      display: table;
+    }
+
+    th,
+    td {
+      text-align: left;
+      padding: 8px 9px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+    }
+
+    th {
+      background: var(--green-soft);
+      color: #173b2d;
+      font-size: 0.84rem;
+      font-weight: 900;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    td code,
+    li code,
+    p code,
+    code {
+      font-family: var(--mono);
+      background: #eef3f1;
+      padding: 2px 6px;
+      border-radius: 7px;
+      color: #17412f;
+      font-size: 0.92em;
+    }
+
+    pre {
+      background: #111827;
+      color: #e5e7eb;
+      padding: 14px;
+      border-radius: 14px;
+      overflow: auto;
+      font-family: var(--mono);
+      font-size: 0.9rem;
+      line-height: 1.55;
+      margin: 12px 0;
+    }
+
+    pre .comment {
+      color: #9ca3af;
+    }
+
+    .kbd {
+      display: inline-block;
+      border: 1px solid #cfd8d3;
+      background: #fff;
+      border-radius: 7px;
+      padding: 1px 7px;
+      font-family: var(--mono);
+      font-size: 0.85em;
+      box-shadow: 0 2px 0 #d8e2dc;
+      white-space: nowrap;
+    }
+
+    .formula-table td:first-child {
+      font-family: var(--mono);
+      font-weight: 800;
+      color: var(--accent-dark);
+      white-space: nowrap;
+    }
+
+    .exercise {
+      counter-reset: item;
+    }
+
+    .exercise li {
+      margin: 9px 0;
+    }
+
+    .checklist li {
+      margin: 8px 0;
+    }
+
+    .checklist li::marker {
+      content: "✓  ";
+      color: var(--accent-dark);
+      font-weight: 900;
+    }
+
+    .no-list {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .capsule {
+      display: inline-block;
+      background: #eef3f1;
+      border: 1px solid #d8e2dc;
+      border-radius: 999px;
+      padding: 4px 10px;
+      margin: 3px;
+      font-weight: 700;
+      color: #41505f;
+      font-size: 0.88rem;
+    }
+
+    .quote {
+      font-family: var(--serif);
+      font-size: 1.16rem;
+      line-height: 1.45;
+      color: #173b2d;
+      background: #fbfdfc;
+      padding: 16px;
+      margin-top: 14px;
+    }
+
+    .page-break {
+      height: 1px;
+      margin: 26px 0;
+      background: linear-gradient(90deg, transparent, var(--line), transparent);
+    }
+
+    .ai-panel {
+      border: 1px solid #d7e2ff;
+      background: linear-gradient(135deg, #f2f7ff, #fbfdfc);
+      margin: 14px 0;
+    }
+
+    .ai-panel h4 {
+      color: #174ea6;
+    }
+
+    .prompt {
+      margin: 10px 0;
+    }
+
+    .prompt .label,
+    .label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 900;
+      color: #174ea6;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 5px;
+    }
+
+    .sources ul {
+      padding-left: 1.1rem;
+    }
+
+    .sources li {
+      margin: 7px 0;
+    }
+
+    .footer-note,
+    .footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.84rem;
+      margin-top: 14px;
+    }
+
+    @media (max-width: 1080px) {
+      body {
+        overflow: auto;
+      }
+
+      .nav {
+        display: flex;
+      }
+
+      .book-app {
+        height: auto;
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        display: none;
+      }
+
+      .viewer-stage {
+        min-height: 75vh;
+      }
+
+      .two,
+      .three,
+      .four,
+      .toc,
+      .cover > .page-content {
+        grid-template-columns: 1fr;
+      }
+
+      .page {
+        position: relative;
+        inset: auto;
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+        margin-bottom: 16px;
+      }
+
+      .page-content {
+        transform: none !important;
+        width: auto !important;
+      }
+
+      .viewer-toolbar,
+      .viewer-preference,
+      .scale-note {
+        display: none !important;
+      }
+
+      .device {
+        transform: none;
+      }
+
+      .mini-sheet {
+        overflow-x: auto;
+      }
+    }
+
+    @media (max-width: 680px) {
+      .topbar-inner {
+        padding: 0 12px;
+      }
+
+      .brand {
+        font-size: 0.92rem;
+      }
+
+      .book-app {
+        padding: 10px 10px 18px;
+      }
+
+      .page-content {
+        padding: 18px;
+      }
+
+      .chapter-title {
+        gap: 10px;
+      }
+
+      .num {
+        min-width: 36px;
+        height: 36px;
+        border-radius: 11px;
+      }
+
+      table {
+        display: block;
+        overflow-x: auto;
+        white-space: normal;
+      }
+
+      th,
+      td {
+        min-width: 140px;
+      }
+
+      .app-top {
+        align-items: flex-start;
+        flex-wrap: wrap;
+      }
+    }
+
+    @media print {
+      body {
+        overflow: visible;
+        background: #fff;
+      }
+
+      .topbar,
+      .sidebar,
+      .viewer-toolbar,
+      .scale-note {
+        display: none;
+      }
+
+      .book-app,
+      .viewer,
+      .viewer-stage,
+      .book {
+        display: block;
+        height: auto;
+        overflow: visible;
+        box-shadow: none;
+        border: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .page {
+        position: static;
+        opacity: 1;
+        visibility: visible;
+        border: none;
+        box-shadow: none;
+        page-break-after: always;
+      }
+
+      .page-content {
+        transform: none !important;
+        width: auto !important;
+        padding: 20px;
+      }
+
+      .cover,
+      .card,
+      .callout,
+      .fake-ui,
+      table,
+      .quote,
+      .ai-panel {
+        break-inside: avoid;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+    }
+
+
+    /* Complementos específicos da ficha de estudo */
+    .study-panel {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fff;
+      padding: 13px;
+      margin: 12px 0;
+      box-shadow: 0 8px 20px rgba(12, 35, 28, 0.045);
+    }
+
+    .study-panel.soft {
+      background: linear-gradient(135deg, #f7fbf8, #fffdf8);
+    }
+
+    .study-panel h3:first-child,
+    .study-panel h4:first-child {
+      margin-top: 0;
+    }
+
+    .study-title-row {
+      display: grid;
+      grid-template-columns: 56px 1fr;
+      gap: 14px;
+      align-items: start;
+      margin-bottom: 14px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 13px;
+    }
+
+    .study-title-row h2 {
+      border-bottom: none;
+      padding-bottom: 0;
+      margin-bottom: 6px;
+    }
+
+    .objective-list,
+    .review-list,
+    .task-list {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .objective-list li,
+    .review-list li,
+    .task-list li {
+      position: relative;
+      padding-left: 28px;
+      margin: 8px 0;
+    }
+
+    .objective-list li::before {
+      content: "🎯";
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
+
+    .review-list li::before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      top: 0;
+      color: var(--accent-dark);
+      font-weight: 900;
+    }
+
+    .task-list li::before {
+      content: "▣";
+      position: absolute;
+      left: 0;
+      top: 0;
+      color: var(--accent-2);
+      font-weight: 900;
+    }
+
+    .answer-lines {
+      display: grid;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .answer-lines span {
+      display: block;
+      min-height: 28px;
+      border-bottom: 1px dashed #9eb3a8;
+    }
+
+    .mini-rubric {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      margin: 12px 0;
+    }
+
+    .mini-rubric div {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 12px;
+      padding: 10px;
+      font-size: 0.92rem;
+    }
+
+    .formula-card {
+      border-left: 5px solid var(--accent);
+      background: #fbfdfc;
+    }
+
+    .formula-card code {
+      display: inline-block;
+      margin: 3px 0;
+    }
+
+    .study-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 999px;
+      padding: 5px 9px;
+      margin: 0 5px 6px 0;
+      background: #eef3f1;
+      border: 1px solid #d8e2dc;
+      color: #41505f;
+      font-size: 0.82rem;
+      font-weight: 800;
+    }
+
+    .practice-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .practice-grid .study-panel {
+      margin: 0;
+    }
+
+    .score-table td:first-child {
+      width: 34%;
+      font-weight: 800;
+      color: #173b2d;
+    }
+
+    @media (max-width: 1080px) {
+      .practice-grid,
+      .mini-rubric,
+      .study-title-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">Ficha de Estudo — Google Planilhas com apoio de IA</div>
+      <nav class="nav" aria-label="Navegação principal da ficha de estudo">
+        <a href="#sumario">Sumário</a>
+        <a href="#diagnostico">Diagnóstico</a>
+        <a href="#cap1">Conceitos</a>
+        <a href="#cap6">Fórmulas</a>
+        <a href="#cap7">Funções</a>
+        <a href="#cap10">Gráficos</a>
+        <a href="#cap12">IA/Gemini</a>
+        <a href="#cap13">Prática</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="book-app">
+    <aside class="sidebar" aria-label="Sumário lateral">
+      <h2>Sumário</h2>
+      <p>Selecione uma etapa da ficha de estudo para exibir no painel de leitura.</p>
+      <nav class="sidebar-nav" id="sidebarNav">
+        <a href="#capa">Capa</a>
+        <a href="#orientacoes">Orientações de estudo</a>
+        <a href="#diagnostico">Diagnóstico inicial</a>
+        <a href="#sumario">Sumário</a>
+        <a href="#cap1">1. Conceito e usos do Google Planilhas</a>
+        <a href="#cap2">2. Interface e primeiros passos</a>
+        <a href="#cap3">3. Células, linhas, colunas, abas e intervalos</a>
+        <a href="#cap4">4. Digitação, seleção e edição de dados</a>
+        <a href="#cap5">5. Formatação e leitura visual</a>
+        <a href="#cap6">6. Fórmulas e lógica de cálculo</a>
+        <a href="#cap7">7. Funções essenciais</a>
+        <a href="#cap8">8. Organização, ordenação e filtros</a>
+        <a href="#cap9">9. Tabelas, validação e listas suspensas</a>
+        <a href="#cap10">10. Gráficos e interpretação dos dados</a>
+        <a href="#cap11">11. Compartilhamento e colaboração</a>
+        <a href="#cap12">12. IA/Gemini como apoio</a>
+        <a href="#cap13">13. Laboratório prático guiado</a>
+        <a href="#cap14">14. Revisão, autoavaliação e glossário</a>
+        <a href="#referencias">Referências</a>
+      </nav>
+    </aside>
+
+    <section class="viewer" aria-label="Área de exibição da apostila">
+      <div class="viewer-toolbar">
+        <button id="prevPage" type="button">◀ Anterior</button>
+        <div class="viewer-status" id="viewerStatus">Capítulo 1 de 1</div>
+        <label class="viewer-preference" for="scalePreference">
+          Exibição:
+          <select id="scalePreference">
+            <option value="reading" selected>Modo leitura</option>
+            <option value="fit">Modo reduzido</option>
+          </select>
+        </label>
+        <button id="nextPage" type="button">Próximo ▶</button>
+      </div>
+
+      <div class="viewer-stage" id="viewerStage">
+        <div class="scale-note" id="scaleNote">Ajuste automático para caber na tela</div>
+        <div class="book" id="bookPages">
+
+<section class="page cover" id="capa">
+<div class="cover-copy">
+<span class="badge eyebrow">📊 Ficha de estudo ampla e detalhada</span>
+<h1><span>Google Planilhas</span><span>com apoio de IA</span></h1>
+<p class="subtitle">Material de estudo orientado para aprender a criar, organizar, calcular, formatar, analisar e compartilhar planilhas online, usando recursos de IA/Gemini como apoio pedagógico e operacional.</p>
+<div class="meta">
+<span class="pill">Objetivos claros</span>
+<span class="pill">Exercícios guiados</span>
+<span class="pill">Fórmulas essenciais</span>
+<span class="pill">Autoavaliação</span>
+</div>
+</div>
+<div aria-label="Ilustração didática de uma planilha" class="device">
+<div class="browser-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span style="margin-left:auto;color:#687482;font-weight:700">sheets.google.com</span></div>
+<div class="mini-sheet">
+<div class="sheet-head"><span class="sheet-icon">S</span>Ficha de Estudo — Controle de Gastos</div>
+<div class="grid">
+<div class="h"></div><div class="h">A</div><div class="h">B</div><div class="h">C</div><div class="h">D</div><div class="h">E</div>
+<div class="r">1</div><div class="green-cell">Data</div><div class="green-cell">Descrição</div><div class="green-cell">Categoria</div><div class="green-cell">Valor</div><div class="green-cell">Status</div>
+<div class="r">2</div><div>02/04</div><div>Mercado</div><div>Alimentação</div><div>R$ 185,40</div><div>Pago</div>
+<div class="r">3</div><div>05/04</div><div>Internet</div><div>Casa</div><div>R$ 99,90</div><div>Pago</div>
+<div class="r">4</div><div>08/04</div><div>Curso</div><div>Educação</div><div>R$ 79,00</div><div>Aberto</div>
+<div class="r">5</div><div></div><div></div><div class="blue-cell">Total</div><div class="blue-cell">=SOMA(D2:D4)</div><div class="yellow-cell">Revisar</div>
+</div>
+</div>
+</div>
+</section>
+
+<section class="page" id="orientacoes">
+<div class="study-title-row"><div class="num">0</div><div><h2>Orientações de estudo</h2><p class="lead">Esta ficha transforma a apostila original em um roteiro ativo de aprendizagem. O aluno não deve apenas ler: deve observar, preencher, praticar, comparar resultados e revisar os próprios erros.</p></div></div>
+<div class="three">
+<div class="study-panel"><h3>Como estudar</h3><ul class="review-list"><li>Leia o conceito principal de cada seção.</li><li>Execute o procedimento indicado em uma planilha real.</li><li>Responda às atividades antes de consultar a revisão.</li><li>Repita os exercícios com dados diferentes.</li></ul></div>
+<div class="study-panel"><h3>Material necessário</h3><ul class="review-list"><li>Conta Google ativa.</li><li>Navegador atualizado ou aplicativo Google Planilhas.</li><li>Planilha nova em branco para treino.</li><li>Bloco de anotações para registrar dúvidas.</li></ul></div>
+<div class="study-panel"><h3>Meta da ficha</h3><ul class="review-list"><li>Criar uma planilha funcional.</li><li>Usar fórmulas básicas com segurança.</li><li>Organizar dados por filtros e validações.</li><li>Construir gráficos e revisar com IA.</li></ul></div>
+</div>
+<div class="callout info"><strong>Critério de domínio:</strong> o aluno demonstra domínio quando consegue explicar o que está fazendo, montar uma tabela limpa, aplicar fórmulas sem copiar mecanicamente e corrigir erros simples de referência, formatação e digitação.</div>
+</section>
+
+<section class="page" id="diagnostico">
+<div class="study-title-row"><div class="num">✓</div><div><h2>Diagnóstico inicial</h2><p class="lead">Antes de começar, avalie o ponto de partida. Esta etapa ajuda o professor ou o próprio aluno a identificar o que precisa ser reforçado.</p></div></div>
+<table class="score-table"><thead><tr><th>Habilidade</th><th>Ainda não sei</th><th>Sei com ajuda</th><th>Sei sozinho</th></tr></thead><tbody>
+<tr><td>Abrir o Google Planilhas</td><td>☐</td><td>☐</td><td>☐</td></tr>
+<tr><td>Criar uma planilha nova</td><td>☐</td><td>☐</td><td>☐</td></tr>
+<tr><td>Entender célula, linha e coluna</td><td>☐</td><td>☐</td><td>☐</td></tr>
+<tr><td>Digitar textos, números, datas e valores</td><td>☐</td><td>☐</td><td>☐</td></tr>
+<tr><td>Usar uma fórmula simples</td><td>☐</td><td>☐</td><td>☐</td></tr>
+<tr><td>Aplicar SOMA, MÉDIA e SE</td><td>☐</td><td>☐</td><td>☐</td></tr>
+<tr><td>Criar filtro, lista suspensa e gráfico</td><td>☐</td><td>☐</td><td>☐</td></tr>
+<tr><td>Compartilhar uma planilha com permissão correta</td><td>☐</td><td>☐</td><td>☐</td></tr>
+</tbody></table>
+<div class="study-panel soft"><h3>Perguntas rápidas</h3><ol><li>Para que você pretende usar planilhas no seu cotidiano?</li><li>Qual é sua maior dificuldade: digitar dados, entender fórmulas, organizar tabelas ou interpretar gráficos?</li><li>Você já usou IA/Gemini para pedir ajuda com fórmulas?</li></ol><div class="answer-lines"><span></span><span></span><span></span></div></div>
+</section>
+
+<section class="page" id="sumario"><h2>Sumário da ficha de estudo</h2><p class="lead">A sequência abaixo organiza o estudo do Google Planilhas em etapas progressivas: primeiro a compreensão da ferramenta, depois a manipulação dos dados, em seguida fórmulas, organização, gráficos, colaboração, IA e prática final.</p><div class="toc"><a href="#cap1"><span><strong>1. Conceito e usos</strong>Finalidade das planilhas e situações reais de aplicação.</span></a><a href="#cap2"><span><strong>2. Interface e primeiros passos</strong>Acesso, tela inicial, menus e barra de fórmulas.</span></a><a href="#cap3"><span><strong>3. Estrutura da planilha</strong>Células, linhas, colunas, intervalos e abas.</span></a><a href="#cap4"><span><strong>4. Entrada e edição</strong>Digitação, seleção, edição, cópia e atalhos.</span></a><a href="#cap5"><span><strong>5. Formatação</strong>Leitura visual, cabeçalho, moeda, porcentagem e bordas.</span></a><a href="#cap6"><span><strong>6. Fórmulas</strong>Lógica do sinal de igual, referências e operadores.</span></a><a href="#cap7"><span><strong>7. Funções essenciais</strong>SOMA, MÉDIA, MÍNIMO, MÁXIMO, CONT.SE, SOMASE, SE e PROCV/BUSCAR.</span></a><a href="#cap8"><span><strong>8. Organização dos dados</strong>Ordenar, filtrar, limpar e preparar tabelas.</span></a><a href="#cap9"><span><strong>9. Validação</strong>Tabelas, listas suspensas e padronização de registros.</span></a><a href="#cap10"><span><strong>10. Gráficos</strong>Criação, escolha e interpretação visual.</span></a><a href="#cap11"><span><strong>11. Colaboração</strong>Compartilhamento, permissões, comentários e histórico.</span></a><a href="#cap12"><span><strong>12. IA/Gemini</strong>Prompts, revisão, geração de fórmulas e limites da IA.</span></a><a href="#cap13"><span><strong>13. Laboratório prático</strong>Construção guiada de uma planilha completa.</span></a><a href="#cap14"><span><strong>14. Revisão e glossário</strong>Autoavaliação, erros comuns e vocabulário essencial.</span></a></div></section>
+
+<section class="page" id="cap1">
+<div class="study-title-row"><div class="num">1</div><div><h2>Conceito e usos do Google Planilhas</h2><p class="lead">O Google Planilhas é um editor de planilhas online usado para registrar, organizar, calcular, analisar e compartilhar dados. Ele funciona no navegador, no celular e integrado ao Google Drive.</p></div></div>
+<div class="two"><div class="study-panel"><h3>Objetivos de aprendizagem</h3><ul class="objective-list"><li>Explicar o que é uma planilha online.</li><li>Identificar situações reais em que o Google Planilhas é útil.</li><li>Diferenciar tabela simples, planilha com fórmulas e planilha de análise.</li><li>Reconhecer a importância de organizar dados antes de calcular.</li></ul></div><div class="study-panel"><h3>Conceitos-chave</h3><span class="study-badge">planilha</span><span class="study-badge">dados</span><span class="study-badge">célula</span><span class="study-badge">fórmula</span><span class="study-badge">colaboração</span><p>Uma planilha funciona como um caderno quadriculado inteligente. O usuário insere dados e a ferramenta pode calcular, classificar, comparar, somar, filtrar e transformar esses dados em gráficos.</p></div></div>
+<h3>Usos cotidianos</h3><table><thead><tr><th>Situação</th><th>O que registrar</th><th>Resultado esperado</th></tr></thead><tbody><tr><td>Controle financeiro</td><td>Receitas, despesas, datas e categorias.</td><td>Saldo, total por categoria e gráfico de gastos.</td></tr><tr><td>Lista de alunos</td><td>Nome, contato, presença, nota e observações.</td><td>Acompanhamento da turma e identificação de pendências.</td></tr><tr><td>Estoque</td><td>Produto, entrada, saída, quantidade e preço.</td><td>Controle de reposição e valor total do estoque.</td></tr><tr><td>Planejamento</td><td>Tarefa, responsável, prazo, prioridade e status.</td><td>Visão clara do que está pendente, em andamento ou concluído.</td></tr></tbody></table>
+<div class="exercise"><strong>Atividade:</strong> escolha uma situação real da sua rotina e descreva quais colunas seriam necessárias para montar uma planilha útil.</div><div class="answer-lines"><span></span><span></span><span></span></div>
+</section>
+
+<section class="page" id="cap2">
+<div class="study-title-row"><div class="num">2</div><div><h2>Interface e primeiros passos</h2><p class="lead">Antes de usar fórmulas, o aluno deve reconhecer a tela do Google Planilhas: nome do arquivo, menus, barra de ferramentas, barra de fórmulas, grade, abas e botão de compartilhamento.</p></div></div>
+<div class="fake-ui"><div class="app-top"><span class="sheet-icon">S</span><span class="app-title">Ficha de treino</span><span class="tool" style="margin-left:auto">Compartilhar</span></div><div class="toolbar"><span class="tool">Arquivo</span><span class="tool">Editar</span><span class="tool">Ver</span><span class="tool">Inserir</span><span class="tool">Formatar</span><span class="tool">Dados</span><span class="tool">Ferramentas</span><span class="tool">Extensões</span></div><div class="formula"><span class="fx">fx</span><div class="formula-box">=SOMA(D2:D10)</div></div><div class="ui-grid"><div class="col"></div><div class="col">A</div><div class="col">B</div><div class="col">C</div><div class="col">D</div><div class="col">E</div><div class="col">F</div><div class="row">1</div><div class="selected">Produto</div><div>Categoria</div><div>Qtd.</div><div>Preço</div><div>Total</div><div>Obs.</div><div class="row">2</div><div>Caderno</div><div>Material</div><div>3</div><div>12,00</div><div class="sum">=C2*D2</div><div></div><div class="row">3</div><div>Caneta</div><div>Material</div><div>10</div><div>2,50</div><div class="sum">=C3*D3</div><div></div></div></div>
+<table><thead><tr><th>Parte da interface</th><th>Função</th><th>O que o aluno deve saber fazer</th></tr></thead><tbody><tr><td>Nome do arquivo</td><td>Identifica a planilha.</td><td>Renomear com clareza, por exemplo: Controle de Gastos - Abril.</td></tr><tr><td>Menu superior</td><td>Reúne comandos principais.</td><td>Localizar opções de arquivo, edição, formatação, dados e inserção.</td></tr><tr><td>Barra de fórmulas</td><td>Exibe ou permite editar o conteúdo da célula.</td><td>Conferir se uma célula contém texto, número ou fórmula.</td></tr><tr><td>Grade</td><td>Área de trabalho com células.</td><td>Selecionar, digitar, copiar e preencher dados.</td></tr><tr><td>Abas</td><td>Dividem o arquivo em páginas internas.</td><td>Criar, renomear, duplicar e organizar abas.</td></tr></tbody></table>
+<div class="task-list"><li>Crie uma planilha em branco.</li><li>Renomeie o arquivo para “Treino Google Planilhas”.</li><li>Digite os cabeçalhos: Data, Descrição, Categoria, Valor e Status.</li><li>Localize a barra de fórmulas e observe o conteúdo da célula selecionada.</li></div>
+</section>
+
+<section class="page" id="cap3">
+<div class="study-title-row"><div class="num">3</div><div><h2>Células, linhas, colunas, abas e intervalos</h2><p class="lead">A base de qualquer planilha é a grade. Entender endereço de célula, intervalo e aba evita erros em fórmulas e organização.</p></div></div>
+<div class="three"><div class="study-panel"><h3>Célula</h3><p>É o espaço onde se digita uma informação. Cada célula tem endereço próprio, como <code>A1</code>, <code>B3</code> ou <code>D10</code>.</p></div><div class="study-panel"><h3>Linha e coluna</h3><p>Linhas são horizontais e numeradas. Colunas são verticais e identificadas por letras.</p></div><div class="study-panel"><h3>Intervalo</h3><p>É um grupo de células. Exemplo: <code>A1:D10</code> representa um bloco da coluna A até D e da linha 1 até 10.</p></div></div>
+<table><thead><tr><th>Referência</th><th>Leitura correta</th><th>Uso comum</th></tr></thead><tbody><tr><td><code>A1</code></td><td>Uma célula específica.</td><td>Referenciar um dado isolado.</td></tr><tr><td><code>A1:A10</code></td><td>Da célula A1 até A10.</td><td>Somar uma coluna.</td></tr><tr><td><code>A1:D1</code></td><td>Da célula A1 até D1.</td><td>Selecionar cabeçalhos.</td></tr><tr><td><code>A1:D10</code></td><td>Bloco com várias linhas e colunas.</td><td>Criar gráfico, filtro ou tabela.</td></tr><tr><td><code>$B$1</code></td><td>Célula travada.</td><td>Usar uma taxa fixa em várias fórmulas.</td></tr></tbody></table>
+<div class="exercise"><strong>Exercício:</strong> explique com suas palavras a diferença entre <code>B2</code>, <code>B2:B10</code> e <code>B2:E10</code>.</div><div class="answer-lines"><span></span><span></span><span></span></div>
+</section>
+
+<section class="page" id="cap4">
+<div class="study-title-row"><div class="num">4</div><div><h2>Digitação, seleção e edição de dados</h2><p class="lead">Dominar entrada e edição de dados é essencial antes de avançar para cálculos. Grande parte dos erros em planilhas começa com dados mal digitados ou mal selecionados.</p></div></div>
+<div class="two"><div class="study-panel"><h3>Procedimento básico</h3><div class="step"><div class="bubble">1</div><div>Clique na célula desejada.</div></div><div class="step"><div class="bubble">2</div><div>Digite texto, número, data, moeda, porcentagem ou fórmula.</div></div><div class="step"><div class="bubble">3</div><div>Pressione <span class="kbd">Enter</span> para confirmar e descer.</div></div><div class="step"><div class="bubble">4</div><div>Use <span class="kbd">Tab</span> para confirmar e ir para a direita.</div></div></div><div class="study-panel"><h3>Atalhos úteis</h3><table><tbody><tr><td>Copiar</td><td><span class="kbd">Ctrl</span> + <span class="kbd">C</span></td></tr><tr><td>Colar</td><td><span class="kbd">Ctrl</span> + <span class="kbd">V</span></td></tr><tr><td>Recortar</td><td><span class="kbd">Ctrl</span> + <span class="kbd">X</span></td></tr><tr><td>Desfazer</td><td><span class="kbd">Ctrl</span> + <span class="kbd">Z</span></td></tr><tr><td>Selecionar tudo</td><td><span class="kbd">Ctrl</span> + <span class="kbd">A</span></td></tr></tbody></table></div></div>
+<h3>Tipos de dados</h3><table><thead><tr><th>Tipo</th><th>Exemplo</th><th>Cuidado</th></tr></thead><tbody><tr><td>Texto</td><td>Mercado, Maria, Pago</td><td>Evite variações desnecessárias, como “Pago”, “pago” e “PAGO”.</td></tr><tr><td>Número</td><td>10, 25, 300</td><td>Não digite símbolos junto se precisar calcular.</td></tr><tr><td>Moeda</td><td>R$ 120,00</td><td>Use formatação de moeda, não apenas texto.</td></tr><tr><td>Data</td><td>25/04/2026</td><td>Mantenha o mesmo padrão de data.</td></tr><tr><td>Fórmula</td><td><code>=SOMA(D2:D10)</code></td><td>Comece com sinal de igual.</td></tr></tbody></table>
+<div class="callout warning"><strong>Erro comum:</strong> colar valores copiados de sites ou PDFs pode trazer espaços ocultos, símbolos e formatação estranha. Após colar, revise alinhamento, formato de número e datas.</div>
+</section>
+
+<section class="page" id="cap5">
+<div class="study-title-row"><div class="num">5</div><div><h2>Formatação e leitura visual</h2><p class="lead">A formatação torna a planilha compreensível. Ela deve destacar estrutura, cabeçalhos, totais, alertas e categorias sem poluir a visualização.</p></div></div>
+<div class="four"><div class="card"><h4>Cabeçalho</h4><p>Use negrito, cor de fundo e alinhamento para identificar nomes das colunas.</p></div><div class="card"><h4>Números</h4><p>Aplique moeda, porcentagem, data ou casas decimais conforme o dado.</p></div><div class="card"><h4>Bordas</h4><p>Use bordas para separar blocos, mas evite grades muito pesadas.</p></div><div class="card"><h4>Cores</h4><p>Use cores com significado: verde para ok, amarelo para atenção, vermelho para problema.</p></div></div>
+<div class="fake-ui"><div class="app-top"><span class="sheet-icon">S</span><span class="app-title">Boletim de Notas</span></div><div class="toolbar"><span class="tool">Negrito</span><span class="tool">Cor</span><span class="tool">Bordas</span><span class="tool">Moeda</span><span class="tool">%</span><span class="tool">Alinhar</span></div><div class="ui-grid"><div class="col"></div><div class="col">A</div><div class="col">B</div><div class="col">C</div><div class="col">D</div><div class="col">E</div><div class="col">F</div><div class="row">1</div><div class="sum">Aluno</div><div class="sum">Nota 1</div><div class="sum">Nota 2</div><div class="sum">Média</div><div class="sum">Situação</div><div class="sum">Obs.</div><div class="row">2</div><div>Ana</div><div>8,0</div><div>7,0</div><div>7,5</div><div class="sum">Aprovado</div><div></div><div class="row">3</div><div>Bruno</div><div>5,0</div><div>4,5</div><div>4,75</div><div class="negative">Revisar</div><div>Recuperação</div></div></div>
+<h3>Checklist de formatação</h3><ul class="review-list"><li>Cabeçalho está claro e destacado?</li><li>Datas aparecem como datas?</li><li>Valores financeiros estão como moeda?</li><li>Totais estão destacados?</li><li>Cores têm função ou são apenas enfeite?</li><li>A primeira linha deve ser congelada?</li></ul>
+</section>
+
+<section class="page" id="cap6">
+<div class="study-title-row"><div class="num">6</div><div><h2>Fórmulas e lógica de cálculo</h2><p class="lead">Fórmulas são instruções que fazem a planilha calcular automaticamente. A regra central é: uma fórmula começa com <code>=</code> e pode combinar números, operadores, células e funções.</p></div></div>
+<div class="two"><div class="study-panel formula-card"><h3>Exemplos básicos</h3><pre>=A1+B1
+=C2*D2
+=SOMA(D2:D10)
+=MÉDIA(B2:C2)
+=SE(D2&gt;=7;"Aprovado";"Revisar")</pre></div><div class="study-panel"><h3>Objetivos</h3><ul class="objective-list"><li>Entender o papel do sinal de igual.</li><li>Usar referências de células em vez de números soltos.</li><li>Diferenciar operadores e funções.</li><li>Reconhecer erro de referência, intervalo e separador.</li></ul></div></div>
+<table><thead><tr><th>Operador</th><th>Função</th><th>Exemplo</th><th>Resultado</th></tr></thead><tbody><tr><td><code>+</code></td><td>Adição</td><td><code>=10+5</code></td><td>15</td></tr><tr><td><code>-</code></td><td>Subtração</td><td><code>=10-5</code></td><td>5</td></tr><tr><td><code>*</code></td><td>Multiplicação</td><td><code>=10*5</code></td><td>50</td></tr><tr><td><code>/</code></td><td>Divisão</td><td><code>=10/5</code></td><td>2</td></tr><tr><td><code>^</code></td><td>Potência</td><td><code>=2^3</code></td><td>8</td></tr></tbody></table>
+<div class="callout info"><strong>Boa prática:</strong> prefira <code>=B2*C2</code> em vez de <code>=3*12</code>. Assim, se o valor de B2 ou C2 mudar, o resultado será atualizado automaticamente.</div>
+<div class="exercise"><strong>Prática:</strong> monte uma tabela com Produto, Quantidade, Preço e Total. Na coluna Total, use multiplicação entre quantidade e preço.</div>
+</section>
+
+<section class="page" id="cap7">
+<div class="study-title-row"><div class="num">7</div><div><h2>Funções essenciais</h2><p class="lead">Funções são fórmulas prontas que simplificam cálculos. O aluno não precisa decorar todas, mas deve dominar as mais usadas no cotidiano.</p></div></div>
+<table class="formula-table"><thead><tr><th>Função</th><th>Para que serve</th><th>Exemplo</th><th>Quando usar</th></tr></thead><tbody><tr><td>SOMA</td><td>Soma valores.</td><td><code>=SOMA(D2:D20)</code></td><td>Total de despesas, vendas ou pontos.</td></tr><tr><td>MÉDIA</td><td>Calcula média.</td><td><code>=MÉDIA(B2:C2)</code></td><td>Média de notas ou avaliações.</td></tr><tr><td>MÍNIMO</td><td>Mostra menor valor.</td><td><code>=MÍNIMO(D2:D20)</code></td><td>Menor venda, menor nota ou menor gasto.</td></tr><tr><td>MÁXIMO</td><td>Mostra maior valor.</td><td><code>=MÁXIMO(D2:D20)</code></td><td>Maior venda, maior nota ou maior gasto.</td></tr><tr><td>CONT.VALORES</td><td>Conta células preenchidas.</td><td><code>=CONT.VALORES(A2:A50)</code></td><td>Quantidade de registros.</td></tr><tr><td>CONT.SE</td><td>Conta por critério.</td><td><code>=CONT.SE(E2:E50;"Pago")</code></td><td>Contar itens pagos, pendentes ou aprovados.</td></tr><tr><td>SOMASE</td><td>Soma por critério.</td><td><code>=SOMASE(C2:C50;"Casa";D2:D50)</code></td><td>Total de gastos de uma categoria.</td></tr><tr><td>SE</td><td>Testa uma condição.</td><td><code>=SE(D2&gt;=7;"Aprovado";"Revisar")</code></td><td>Criar situações automáticas.</td></tr></tbody></table>
+<div class="study-panel"><h3>Exercícios de fixação</h3><ol><li>Crie uma coluna de valores e calcule o total com SOMA.</li><li>Crie três notas para cada aluno e calcule a média.</li><li>Use SE para retornar “Aprovado” quando a média for maior ou igual a 7.</li><li>Use CONT.SE para contar quantos alunos estão em “Revisar”.</li><li>Use SOMASE para somar despesas apenas da categoria “Alimentação”.</li></ol></div>
+<div class="callout warning"><strong>Atenção:</strong> dependendo da configuração regional, o separador pode ser ponto e vírgula <code>;</code> ou vírgula <code>,</code>. Em contas configuradas para português do Brasil, é comum usar <code>;</code>.</div>
+</section>
+
+<section class="page" id="cap8">
+<div class="study-title-row"><div class="num">8</div><div><h2>Organização, ordenação e filtros</h2><p class="lead">Quando a planilha cresce, localizar informações manualmente fica difícil. Ordenar e filtrar ajudam a transformar uma tabela extensa em uma fonte de consulta.</p></div></div>
+<div class="three"><div class="card"><h4>Ordenar</h4><p>Reorganiza dados em ordem alfabética, numérica ou por data. Exemplo: ordenar despesas da maior para a menor.</p></div><div class="card"><h4>Filtrar</h4><p>Mostra apenas dados que atendem a uma condição. Exemplo: exibir somente status “Pendente”.</p></div><div class="card"><h4>Limpar dados</h4><p>Corrige duplicidades, espaços, categorias inconsistentes e registros incompletos.</p></div></div>
+<h3>Procedimento de estudo</h3><div class="step"><div class="bubble">1</div><div>Crie uma tabela com cabeçalhos claros.</div></div><div class="step"><div class="bubble">2</div><div>Selecione o intervalo da tabela, incluindo cabeçalhos.</div></div><div class="step"><div class="bubble">3</div><div>Acesse <strong>Dados</strong> e aplique filtro.</div></div><div class="step"><div class="bubble">4</div><div>Use o ícone de filtro para escolher categoria, status ou valor.</div></div><div class="step"><div class="bubble">5</div><div>Remova o filtro e verifique se todos os dados voltaram a aparecer.</div></div>
+<table><thead><tr><th>Problema</th><th>Consequência</th><th>Correção</th></tr></thead><tbody><tr><td>Cabeçalho vazio</td><td>Filtro confuso.</td><td>Nomear todas as colunas.</td></tr><tr><td>Categoria duplicada com grafias diferentes</td><td>Resumo errado.</td><td>Padronizar categorias.</td></tr><tr><td>Datas como texto</td><td>Ordenação incorreta.</td><td>Formatar como data.</td></tr><tr><td>Valores como texto</td><td>Soma não funciona.</td><td>Formatar como número ou moeda.</td></tr></tbody></table>
+</section>
+
+<section class="page" id="cap9">
+<div class="study-title-row"><div class="num">9</div><div><h2>Tabelas, validação e listas suspensas</h2><p class="lead">Validação de dados evita erros de digitação e padroniza respostas. Em vez de cada pessoa escrever de um jeito, a planilha oferece opções controladas.</p></div></div>
+<div class="two"><div class="study-panel"><h3>Exemplo de lista suspensa</h3><p>Na coluna Status, use opções como:</p><ul class="review-list"><li>Pago</li><li>Pendente</li><li>Cancelado</li><li>Em análise</li></ul><p>Na coluna Categoria, use opções como: Alimentação, Transporte, Casa, Educação, Saúde e Lazer.</p></div><div class="study-panel"><h3>Benefícios</h3><ul class="objective-list"><li>Evita grafias diferentes.</li><li>Facilita filtros e gráficos.</li><li>Reduz retrabalho.</li><li>Ajuda outros usuários a preencher corretamente.</li></ul></div></div>
+<h3>Passo a passo</h3><div class="step"><div class="bubble">1</div><div>Selecione as células que receberão a lista.</div></div><div class="step"><div class="bubble">2</div><div>Acesse <strong>Dados</strong> e depois <strong>Validação de dados</strong>.</div></div><div class="step"><div class="bubble">3</div><div>Escolha lista suspensa ou lista de opções.</div></div><div class="step"><div class="bubble">4</div><div>Digite as opções e escolha as cores, se necessário.</div></div><div class="step"><div class="bubble">5</div><div>Teste a lista em algumas linhas.</div></div>
+<div class="exercise"><strong>Atividade:</strong> crie uma tabela de tarefas com as colunas Tarefa, Responsável, Prazo, Prioridade e Status. A coluna Status deve ter lista suspensa.</div>
+</section>
+
+<section class="page" id="cap10">
+<div class="study-title-row"><div class="num">10</div><div><h2>Gráficos e interpretação dos dados</h2><p class="lead">Gráficos ajudam a enxergar padrões que nem sempre aparecem facilmente em uma tabela. O objetivo não é enfeitar, mas comunicar informação.</p></div></div>
+<table><thead><tr><th>Tipo de gráfico</th><th>Melhor uso</th><th>Exemplo</th></tr></thead><tbody><tr><td>Colunas</td><td>Comparar valores entre categorias.</td><td>Gastos por categoria.</td></tr><tr><td>Linhas</td><td>Mostrar evolução ao longo do tempo.</td><td>Vendas por mês.</td></tr><tr><td>Pizza</td><td>Mostrar proporção de um total.</td><td>Percentual de despesas por área.</td></tr><tr><td>Barras</td><td>Comparar itens com nomes longos.</td><td>Produtos mais vendidos.</td></tr></tbody></table>
+<div class="study-panel soft"><h3>Como criar um gráfico</h3><ol><li>Organize a tabela com cabeçalhos.</li><li>Selecione o intervalo correto.</li><li>Clique em <strong>Inserir</strong> e depois em <strong>Gráfico</strong>.</li><li>Confira se o tipo de gráfico combina com a pergunta que você quer responder.</li><li>Edite título, legenda e rótulos para facilitar a leitura.</li></ol></div>
+<div class="callout info"><strong>Pergunta-guia:</strong> antes de criar um gráfico, pergunte: “o que eu quero que o leitor perceba?” Se a resposta for comparação, use colunas ou barras; se for evolução, use linhas; se for proporção, use pizza com cuidado.</div>
+<div class="exercise"><strong>Prática:</strong> crie uma tabela com categorias de despesa e valores. Depois gere um gráfico de colunas e escreva uma interpretação de três linhas.</div><div class="answer-lines"><span></span><span></span><span></span></div>
+</section>
+
+<section class="page" id="cap11">
+<div class="study-title-row"><div class="num">11</div><div><h2>Compartilhamento e colaboração</h2><p class="lead">Uma das principais vantagens do Google Planilhas é permitir que várias pessoas trabalhem no mesmo arquivo, com permissões controladas.</p></div></div>
+<div class="three"><div class="card"><h4>Leitor</h4><p>Pode visualizar, mas não editar. Indicado para relatórios e consultas.</p></div><div class="card"><h4>Comentador</h4><p>Pode sugerir e comentar, mas não alterar diretamente os dados.</p></div><div class="card"><h4>Editor</h4><p>Pode modificar a planilha. Deve ser concedido com cuidado.</p></div></div>
+<h3>Boas práticas de colaboração</h3><ul class="review-list"><li>Dê nomes claros aos arquivos.</li><li>Evite compartilhar com “qualquer pessoa com o link” sem necessidade.</li><li>Use comentários para discutir alterações.</li><li>Revise o histórico de versões quando houver erro.</li><li>Proteja células com fórmulas importantes.</li><li>Defina quem pode editar e quem apenas visualiza.</li></ul>
+<div class="callout warning"><strong>Cuidado:</strong> se uma pessoa com permissão de edição apagar fórmulas ou alterar dados, o resultado da planilha pode ficar incorreto. Em planilhas importantes, proteja intervalos e mantenha cópias.</div>
+<div class="exercise"><strong>Atividade:</strong> descreva uma situação em que seria melhor conceder acesso de leitor, outra de comentador e outra de editor.</div><div class="answer-lines"><span></span><span></span><span></span></div>
+</section>
+
+<section class="page" id="cap12">
+<div class="study-title-row"><div class="num">12</div><div><h2>IA/Gemini como apoio ao estudo e à produção</h2><p class="lead">A IA pode ajudar a criar fórmulas, revisar tabelas, sugerir gráficos, encontrar padrões e explicar erros. Porém, o aluno precisa conferir os resultados, pois a IA pode interpretar mal o contexto.</p></div></div>
+<div class="two"><div class="ai-panel"><h3>O que pedir à IA</h3><ul class="review-list"><li>Explicar uma fórmula em linguagem simples.</li><li>Sugerir colunas para uma planilha.</li><li>Criar uma fórmula com base em uma regra.</li><li>Revisar categorias e padrões.</li><li>Sugerir tipo de gráfico adequado.</li></ul></div><div class="ai-panel"><h3>O que conferir</h3><ul class="review-list"><li>Se as células e intervalos estão corretos.</li><li>Se o separador é vírgula ou ponto e vírgula.</li><li>Se a fórmula usa nomes em português ou inglês.</li><li>Se a resposta atende ao objetivo real.</li><li>Se há dados sensíveis expostos.</li></ul></div></div>
+<h3>Prompts prontos para estudo</h3><div class="prompt"><span class="label">Prompt 1 — criar estrutura</span>Crie uma estrutura de planilha para controlar despesas mensais, com colunas essenciais, tipos de dados e sugestões de categorias.</div><div class="prompt"><span class="label">Prompt 2 — explicar fórmula</span>Explique em linguagem simples a fórmula <code>=SE(D2&gt;=7;"Aprovado";"Revisar")</code> e mostre um exemplo prático.</div><div class="prompt"><span class="label">Prompt 3 — revisar erro</span>Minha fórmula <code>=SOMA(D2:D10)</code> não mostra o resultado esperado. Quais erros devo verificar?</div><div class="prompt"><span class="label">Prompt 4 — sugerir gráfico</span>Tenho uma tabela com categoria de gasto e valor total por categoria. Qual tipo de gráfico devo usar e por quê?</div>
+<div class="callout danger"><strong>Limite ético e prático:</strong> não envie à IA dados sensíveis de alunos, documentos pessoais, senhas, dados bancários ou informações privadas. Substitua nomes reais por exemplos fictícios quando estiver estudando.</div>
+</section>
+
+<section class="page" id="cap13">
+<div class="study-title-row"><div class="num">13</div><div><h2>Laboratório prático guiado</h2><p class="lead">Nesta atividade, o aluno construirá uma planilha completa de controle financeiro simples, aplicando estrutura, formatação, fórmulas, filtros, lista suspensa e gráfico.</p></div></div>
+<div class="practice-grid"><div class="study-panel"><h3>Etapa 1 — Estrutura</h3><ul class="task-list"><li>Crie uma planilha nova.</li><li>Nomeie como Controle Financeiro de Estudo.</li><li>Crie as colunas: Data, Descrição, Categoria, Tipo, Valor e Status.</li></ul></div><div class="study-panel"><h3>Etapa 2 — Dados</h3><ul class="task-list"><li>Preencha pelo menos 12 linhas.</li><li>Use receitas e despesas.</li><li>Inclua categorias como Casa, Educação, Transporte, Alimentação e Lazer.</li></ul></div><div class="study-panel"><h3>Etapa 3 — Formatação</h3><ul class="task-list"><li>Destaque o cabeçalho.</li><li>Formate a coluna Valor como moeda.</li><li>Congele a primeira linha.</li></ul></div><div class="study-panel"><h3>Etapa 4 — Fórmulas</h3><ul class="task-list"><li>Calcule total de receitas.</li><li>Calcule total de despesas.</li><li>Calcule saldo final.</li></ul></div><div class="study-panel"><h3>Etapa 5 — Organização</h3><ul class="task-list"><li>Crie filtro.</li><li>Ordene por data.</li><li>Filtre apenas despesas.</li></ul></div><div class="study-panel"><h3>Etapa 6 — Análise</h3><ul class="task-list"><li>Crie resumo por categoria.</li><li>Gere um gráfico.</li><li>Escreva uma conclusão sobre os dados.</li></ul></div></div>
+<h3>Fórmulas sugeridas</h3><pre>=SOMASE(D2:D13;"Receita";E2:E13)
+=SOMASE(D2:D13;"Despesa";E2:E13)
+=TotalReceitas-TotalDespesas</pre>
+<div class="study-panel soft"><h3>Relatório final do aluno</h3><p>Após concluir a atividade, responda:</p><ol><li>Qual categoria teve maior gasto?</li><li>O saldo final ficou positivo ou negativo?</li><li>Qual gráfico representou melhor os dados?</li><li>Que melhoria você faria na planilha?</li></ol><div class="answer-lines"><span></span><span></span><span></span><span></span></div></div>
+</section>
+
+<section class="page" id="cap14">
+<div class="study-title-row"><div class="num">14</div><div><h2>Revisão, autoavaliação e glossário</h2><p class="lead">A revisão final consolida os principais conceitos e permite verificar se o aluno já consegue usar o Google Planilhas com autonomia inicial.</p></div></div>
+<h3>Autoavaliação</h3><table class="score-table"><thead><tr><th>Competência</th><th>Preciso revisar</th><th>Consigo com ajuda</th><th>Consigo sozinho</th></tr></thead><tbody><tr><td>Criar e renomear uma planilha</td><td>☐</td><td>☐</td><td>☐</td></tr><tr><td>Organizar cabeçalhos e dados</td><td>☐</td><td>☐</td><td>☐</td></tr><tr><td>Formatar moeda, data e porcentagem</td><td>☐</td><td>☐</td><td>☐</td></tr><tr><td>Usar SOMA, MÉDIA, SE, CONT.SE e SOMASE</td><td>☐</td><td>☐</td><td>☐</td></tr><tr><td>Criar filtros e listas suspensas</td><td>☐</td><td>☐</td><td>☐</td></tr><tr><td>Criar e interpretar gráfico</td><td>☐</td><td>☐</td><td>☐</td></tr><tr><td>Compartilhar com permissão correta</td><td>☐</td><td>☐</td><td>☐</td></tr><tr><td>Usar IA para apoio sem aceitar tudo automaticamente</td><td>☐</td><td>☐</td><td>☐</td></tr></tbody></table>
+<h3>Erros comuns</h3><div class="two"><div class="study-panel"><ul class="review-list"><li>Esquecer o sinal de igual na fórmula.</li><li>Selecionar intervalo errado.</li><li>Digitar valores como texto.</li><li>Usar categoria com grafias diferentes.</li><li>Compartilhar o arquivo com permissão ampla demais.</li></ul></div><div class="study-panel"><ul class="review-list"><li>Usar cores sem critério.</li><li>Mesclar células em tabelas que precisam de filtro.</li><li>Não congelar cabeçalho em tabelas longas.</li><li>Não conferir fórmulas sugeridas por IA.</li><li>Apagar fórmulas ao colar dados por cima.</li></ul></div></div>
+<h3>Glossário essencial</h3><table><thead><tr><th>Termo</th><th>Significado</th></tr></thead><tbody><tr><td>Célula</td><td>Espaço da planilha onde se insere informação.</td></tr><tr><td>Intervalo</td><td>Conjunto de células, como <code>A1:D10</code>.</td></tr><tr><td>Fórmula</td><td>Instrução de cálculo iniciada por <code>=</code>.</td></tr><tr><td>Função</td><td>Fórmula pronta, como SOMA ou MÉDIA.</td></tr><tr><td>Filtro</td><td>Recurso que exibe apenas dados que atendem a critérios.</td></tr><tr><td>Validação</td><td>Regra que limita ou orienta o preenchimento de células.</td></tr><tr><td>Gráfico</td><td>Representação visual dos dados.</td></tr><tr><td>Permissão</td><td>Nível de acesso dado a outra pessoa: leitor, comentador ou editor.</td></tr></tbody></table>
+</section>
+
+<section class="page" id="referencias">
+<h2>Referências e observações finais</h2>
+<p class="lead">Esta ficha de estudo foi adaptada a partir da página original enviada, mantendo a proposta visual do material e reorganizando o conteúdo em objetivos, revisão, prática e autoavaliação.</p>
+<div class="study-panel soft"><h3>Como usar em aula</h3><ul class="review-list"><li>Use a seção de diagnóstico no início da aula.</li><li>Trabalhe uma ou duas seções por encontro, dependendo do nível da turma.</li><li>Peça que o aluno construa uma planilha real, não apenas leia os exemplos.</li><li>Use o laboratório prático como atividade avaliativa.</li><li>Reaplique a autoavaliação ao final para comparar evolução.</li></ul></div>
+<div class="footer-note">Material educacional em HTML — Google Planilhas com apoio de IA.</div>
+</section>
+
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      const stage = document.getElementById("viewerStage");
+      const book = document.getElementById("bookPages");
+      const pages = Array.from(book.querySelectorAll(".page"));
+      const sidebarLinks = Array.from(document.querySelectorAll("#sidebarNav a"));
+      const topLinks = Array.from(document.querySelectorAll(".topbar .nav a, .toc a"));
+      const prevBtn = document.getElementById("prevPage");
+      const nextBtn = document.getElementById("nextPage");
+      const status = document.getElementById("viewerStatus");
+      const scalePreference = document.getElementById("scalePreference");
+      const scaleNote = document.getElementById("scaleNote");
+
+      if (!stage || pages.length === 0 || !prevBtn || !nextBtn || !status) {
+        return;
+      }
+
+      function prepareContentWrappers() {
+        pages.forEach((page) => {
+          if (page.querySelector(":scope > .page-content")) {
+            return;
+          }
+          const wrapper = document.createElement("div");
+          wrapper.className = "page-content";
+          while (page.firstChild) {
+            wrapper.appendChild(page.firstChild);
+          }
+          page.appendChild(wrapper);
+        });
+      }
+
+      function isDesktopViewer() {
+        return window.matchMedia("(min-width: 1081px)").matches;
+      }
+
+      let activeIndex = 0;
+
+      function indexFromHash() {
+        const hash = window.location.hash.replace("#", "");
+        if (!hash) {
+          return 0;
+        }
+        const found = pages.findIndex((page) => page.id === hash);
+        return found >= 0 ? found : 0;
+      }
+
+      function fitActivePage() {
+        if (!isDesktopViewer()) {
+          stage.classList.remove("is-scaled");
+          stage.classList.remove("mode-reading", "mode-fit");
+          return;
+        }
+
+        const page = pages[activeIndex];
+        const content = page.querySelector(":scope > .page-content");
+        if (!content) {
+          return;
+        }
+
+        const preference = scalePreference ? scalePreference.value : "reading";
+        stage.classList.toggle("mode-reading", preference === "reading");
+        stage.classList.toggle("mode-fit", preference === "fit");
+        content.classList.toggle("tight-mode", preference === "fit");
+
+        if (preference === "reading") {
+          content.style.transform = "none";
+          content.style.width = "auto";
+          stage.classList.remove("is-scaled");
+          if (scaleNote) {
+            scaleNote.textContent = "Modo leitura · rolagem ativa";
+          }
+          return;
+        }
+
+        content.style.transform = "scale(1)";
+        content.style.width = "100%";
+
+        const paddingAllowance = 4;
+        const availableW = page.clientWidth - paddingAllowance;
+        const availableH = page.clientHeight - paddingAllowance;
+        const naturalW = content.scrollWidth;
+        const naturalH = content.scrollHeight;
+
+        if (!naturalW || !naturalH) {
+          return;
+        }
+
+        const ratioW = availableW / naturalW;
+        const ratioH = availableH / naturalH;
+        let scale = Math.min(1, ratioW, ratioH);
+
+        const minScale = 0.56;
+        scale = Math.max(minScale, scale);
+
+        const forcedFit = Math.min(1, ratioW, ratioH);
+        if (scale > forcedFit) {
+          scale = forcedFit;
+        }
+
+        content.style.transform = "scale(" + scale + ")";
+        content.style.width = (100 / scale) + "%";
+        stage.classList.toggle("is-scaled", scale < 0.999);
+
+        if (scaleNote) {
+          const percent = Math.round(scale * 100);
+          scaleNote.textContent = "Modo reduzido · " + percent + "%";
+        }
+      }
+
+      function syncActiveLinks() {
+        const id = pages[activeIndex].id;
+        sidebarLinks.forEach((link) => {
+          link.classList.toggle("active", link.getAttribute("href") === "#" + id);
+        });
+      }
+
+      function updateStatus() {
+        status.textContent = "Capítulo " + (activeIndex + 1) + " de " + pages.length;
+        prevBtn.disabled = activeIndex === 0;
+        nextBtn.disabled = activeIndex === pages.length - 1;
+      }
+
+      function showPage(index, updateHash) {
+        activeIndex = Math.max(0, Math.min(pages.length - 1, index));
+
+        pages.forEach((page, i) => {
+          page.classList.toggle("active", i === activeIndex);
+          page.setAttribute("aria-hidden", i === activeIndex ? "false" : "true");
+        });
+
+        updateStatus();
+        syncActiveLinks();
+        fitActivePage();
+
+        if (updateHash) {
+          history.replaceState(null, "", "#" + pages[activeIndex].id);
+        }
+      }
+
+      function handleLinkClick(event) {
+        const href = event.currentTarget.getAttribute("href") || "";
+        if (!href.startsWith("#")) {
+          return;
+        }
+        const id = href.slice(1);
+        const idx = pages.findIndex((page) => page.id === id);
+        if (idx < 0) {
+          return;
+        }
+
+        if (isDesktopViewer()) {
+          event.preventDefault();
+          showPage(idx, true);
+        }
+      }
+
+      sidebarLinks.forEach((link) => link.addEventListener("click", handleLinkClick));
+      topLinks.forEach((link) => link.addEventListener("click", handleLinkClick));
+
+      prevBtn.addEventListener("click", () => showPage(activeIndex - 1, true));
+      nextBtn.addEventListener("click", () => showPage(activeIndex + 1, true));
+
+      if (scalePreference) {
+        scalePreference.addEventListener("change", () => {
+          showPage(activeIndex, false);
+        });
+      }
+
+      document.addEventListener("keydown", (event) => {
+        if (!isDesktopViewer()) {
+          return;
+        }
+        if (event.key === "ArrowRight") {
+          showPage(activeIndex + 1, true);
+        }
+        if (event.key === "ArrowLeft") {
+          showPage(activeIndex - 1, true);
+        }
+      });
+
+      window.addEventListener("resize", () => {
+        if (!isDesktopViewer()) {
+          stage.classList.remove("is-scaled");
+          stage.classList.remove("mode-reading", "mode-fit");
+          pages.forEach((page) => {
+            const content = page.querySelector(":scope > .page-content");
+            if (content) {
+              content.style.transform = "none";
+              content.style.width = "auto";
+              content.classList.remove("tight-mode");
+            }
+            page.classList.add("active");
+            page.setAttribute("aria-hidden", "false");
+          });
+          return;
+        }
+
+        showPage(activeIndex, false);
+      });
+
+      prepareContentWrappers();
+      const initial = indexFromHash();
+      if (isDesktopViewer()) {
+        showPage(initial, false);
+      } else {
+        activeIndex = initial;
+        updateStatus();
+        syncActiveLinks();
+      }
+    })();
+
+  </script>
+</body>
+</html>
